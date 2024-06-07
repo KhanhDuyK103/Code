@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+long long n,q;
+string l1,l2;
+struct TNODE
+{
+    int w_count,st;
+    TNODE *child[26];
+    TNODE()
+    {
+        st=0;
+        w_count=0;
+        for( int i=1;i<=26;i++)
+        {
+            child[i]=NULL;
+        }
+    }
+};
+TNODE *trie=new TNODE;
+void adding_string( string s)
+{
+    TNODE *p= trie;
+    for( int i=0;i<=s.size();i++)
+    {
+        long long k=s[i]-'a';
+        if((*p).child[k]==NULL)
+        {
+            (*p).child[k]=new TNODE;
+        }
+        p=(*p).child[k];
+        (*p).st++;
+    }
+    (*p).w_count++;
+}
+long long checking_string( string s)
+{
+     TNODE *p= trie;
+    for( int i=0;i<=s.size();i++)
+    {
+        long long k=s[i]-'a';
+        if((*p).child[k]==NULL)
+        {
+            return 0;
+        }
+        p=(*p).child[k];
+    }
+     return(*p).w_count ;
+}
+void removing_string( string s)
+{
+
+     if(checking_string(s)==0)
+     {
+         return;
+     }
+     TNODE *p= trie;
+    for( int i=0;i<=s.size();i++)
+    {
+        long long k=s[i]-'a';
+        p=(*p).child[k];
+        (*p).st--;
+    }
+    (*p).w_count--;
+}
+int main()
+{
+    cin>>n>>q;
+    for( int i=1;i<=n;i++)
+    {
+        cin>>l1;
+        adding_string(l1);
+    }
+    while(q--)
+    {
+        cin>>l2;
+       cout<< checking_string(l2)<<'/n';
+    }
+
+    return 0;
+}
