@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+using namespace std;
+long long sa[999999];
+long long lcp[999999];
+long long ranking[999999];
+long long t[999999];
+long long n,k;
+string s;
+
+bool cmp(long long i, long long j)
+{
+    if(ranking[i] != ranking[j])
+    {
+        return ranking[i] < ranking[j];
+    }
+    i+=k;
+    j+=k;
+    if(i<n && j<n)
+    {
+         return ranking[i] < ranking[j];
+    }
+    else return i>j;
+}
+ void buildsa()
+ {
+     n=s.size();
+     for( int i=0;i<n;i++)
+     {
+         sa[i]=i;
+         ranking[i]=s[i];
+     }
+     for(k=1;;k=k*2)
+     {
+         sort(sa,sa+n,cmp);
+         for( int i=0;i<n-1;i++)
+         {
+             t[i+1]=t[i]+cmp(sa[i],sa[i+1]);
+         }
+         for( int i=0;i<n;i++)
+         {
+             ranking[sa[i]]=t[i];
+         }
+         if(t[n-1]==n-1)
+         {
+             break;
+         }
+     }  
+ }
+ void buildlcp()
+ {
+    for( int i=0;i<n;i++)
+    {
+        long long k=0;
+        if(ranking[i]!= n-1)
+        {
+            long long j= sa [ranking[i]+1];
+            while(s[i+k] == s[j+k])
+            {
+                k++;
+            }
+            lcp[ranking[i]]=k;
+            if(k) k--;
+        }
+    }
+ }
+int main()
+{
+    freopen("suffixarray.inp","r",stdin);
+    freopen("suffixarray.out","w",stdout);
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    cin>>s;
+    buildsa();
+    buildlcp();
+    for( int i= 0;i<n;i++)
+    {
+        cout<<sa[i]<<" ";
+    }
+    cout<<endl;
+    for( int i= 0;i<n;i++)
+    {
+        cout<<lcp[i]<<" ";
+    }
+    long long res=0;
+    for(int i=0;i<s.size();i++)
+    {
+        res+=(s.size()-sa[i]-lcp[i]);
+    }
+    cout<<res;
+
+}
